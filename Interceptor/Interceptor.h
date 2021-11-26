@@ -2,12 +2,16 @@
 
 #include <iostream>
 #include <mutex>
+#include <vector>
 
 class Interceptor
 {
-  Interceptor() = default;
+  Interceptor() { std::cout << "Interceptor::Ctor" << std::endl; };
+  ~Interceptor() { std::cout << "Interceptor::~Dtor" << std::endl; };
+
   std::mutex cout_mutex;
 public:
+
 
   static Interceptor& get_instance() {
     static Interceptor instance;
@@ -15,6 +19,8 @@ public:
   }
 
   void on_call(const void* pa) {
+    static std::vector<const void*> vec;
+    //vec.push_back(pa);
     std::lock_guard<std::mutex> guard(cout_mutex);
     std::cout << "Intercepted: " << pa << '\n';
   }
